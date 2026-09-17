@@ -199,7 +199,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);vertical-align:middle}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;color:var(--paper-mute);margin-bottom:5px}
 .field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
-.field textarea{min-height:76px;resize:vertical}
+.field textarea{min-height:110px;resize:vertical;font-size:13px}
 .field select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--paper-mute) 50%),linear-gradient(135deg,var(--paper-mute) 50%,transparent 50%);background-position:calc(100% - 17px) 18px,calc(100% - 12px) 18px;background-size:5px 5px;background-repeat:no-repeat}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brass);outline:none}
 
@@ -246,7 +246,7 @@ input[type=checkbox]{width:17px;height:17px;accent-color:var(--brass);cursor:poi
     <div class="topbar">
       <b>Штаб</b>
       <button class="btn sm" style="margin-left:auto" id="curbtn2"></button>
-      <button class="btn sm" onclick="lockNow()">Выйти</button>
+      <button class="btn sm" onclick="menuOpen()">Меню</button>
     </div>
     <div class="tabs" id="tabs"></div>
     </div>
@@ -400,7 +400,7 @@ function vToday(){
 
   let say;
   if(inc===0) say='Месяц пока без оплат. Всё, что имеет значение сегодня, — довести одного человека до «да».';
-  else if(inc<g) say='В месяце '+money(inc)+' из '+money(g)+'. До цели '+money(g-inc)+' — это '+Math.ceil((g-inc)/S.goal.subPrice)+' подписки или одно внедрение.';
+  else if(inc<g){const n=Math.ceil((g-inc)/S.goal.subPrice);say='В месяце '+money(inc)+' из '+money(g)+'. До цели '+money(g-inc)+' — это '+n+' '+plural(n,'подписка','подписки','подписок')+' или одно внедрение.';}
   else say='Цель месяца закрыта: '+money(inc)+'. Теперь вопрос не «сколько», а «повторяется ли».';
 
   const need=Math.max(0,g-inc);
@@ -432,7 +432,7 @@ function vToday(){
   <div class="card" style="margin-top:12px">
     <div class="between" style="margin-bottom:10px"><div style="font-weight:700;font-size:14px">Путь к ${money(g)}</div><div class="sub">${Math.round(pct)}%</div></div>
     <div class="bar"><i data-w="${pct}"></i></div>
-    <div class="sub" style="margin-top:10px">Не хватает ${money(need)}. Это ${Math.ceil(need/S.goal.subPrice)} подписки по ${money(S.goal.subPrice)} или одно внедрение.</div>
+    <div class="sub" style="margin-top:10px">Не хватает ${money(need)}. Это ${Math.ceil(need/S.goal.subPrice)} ${plural(Math.ceil(need/S.goal.subPrice),'подписка','подписки','подписок')} по ${money(S.goal.subPrice)} или одно внедрение.</div>
   </div>
 
   ${taskBlock()}
@@ -923,6 +923,26 @@ function openModal(title,fields,onSave,onDelete){
   setTimeout(()=>{const i=m.querySelector('input,textarea,select');if(i&&window.innerWidth>720)i.focus();},60);
 }
 function closeModal(){document.getElementById('mask').classList.remove('on');}
+function menuOpen(){
+  const m=document.getElementById('modal');
+  m.innerHTML=`<div class="between" style="margin-bottom:16px"><div class="h2">Меню</div><button class="btn sm" onclick="closeModal()">Закрыть</button></div>
+  <div class="list">
+    <button class="btn" style="width:100%;text-align:left;padding:13px" onclick="closeModal();document.getElementById('imp').click()">Загрузить данные из файла</button>
+    <button class="btn" style="width:100%;text-align:left;padding:13px" onclick="pasteData()">Вставить данные текстом</button>
+    <button class="btn" style="width:100%;text-align:left;padding:13px" onclick="closeModal();exportData()">Скачать копию данных</button>
+    <button class="btn" style="width:100%;text-align:left;padding:13px" onclick="closeModal();cycleCur()">Валюта: ${CUR} — переключить</button>
+    <button class="btn danger" style="width:100%;text-align:left;padding:13px" onclick="lockNow()">Выйти</button>
+  </div>`;
+  document.getElementById('mask').classList.add('on');
+}
+function pasteData(){
+  openModal('Вставить данные',[{k:'j',l:'Вставь сюда всё содержимое файла aku-hq-data.json',t:'textarea'}],v=>{
+    try{
+      const d=JSON.parse(v.j);
+      S=Object.assign(structuredClone(SEED),d);save();render();toast('Данные загружены');
+    }catch(e){alert('Это не похоже на JSON. Скопируй содержимое файла целиком, от первой скобки до последней');}
+  });
+}
 document.getElementById('mask').addEventListener('click',e=>{if(e.target.id==='mask')closeModal();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
