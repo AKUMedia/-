@@ -1089,14 +1089,36 @@ async function afterSession(){
 }
 async function startEnroll(){
   try{
+    // чистим неподтверждённые попытки, чтобы не копились и не утекали
+    try{
+      const {data:old}=await sb.auth.mfa.listFactors();
+      for(const x of ((old&&old.all)||[])) if(x.status!=='verified') await sb.auth.mfa.unenroll({factorId:x.id});
+    }catch(e){}
     const {data,error}=await sb.auth.mfa.enroll({factorType:'totp',friendlyName:'Штаб-'+Date.now()});
     if(error){pinGate();return;}
     enrollId=data.id;
-    const q=data.totp.qr_code||'';
-    document.getElementById('qrbox').innerHTML=q.trim().startsWith('<svg')?q:'<img src="'+q+'" alt="QR">';
-    document.getElementById('secbox').textContent='Если QR не читается, введи вручную: '+data.totp.secret;
+    drawQR(data.totp.qr_code||'',data.totp.uri||'');
+    const s=document.getElementById('secbox');
+    s.textContent='';
+    s.innerHTML='<button class="ghost" id="showsec" style="width:100%">Показать код для ручного ввода</button>';
+    document.getElementById('showsec').onclick=()=>{s.textContent='Введи вручную: '+data.totp.secret;};
     pane('paneEnroll');
   }catch(e){pinGate();}
+}
+function drawQR(q,uri){
+  const box=document.getElementById('qrbox');
+  box.innerHTML='';
+  let v=(q||'').trim();
+  if(v.startsWith('data:')){
+    const i=v.indexOf(',');
+    const payload=decodeURIComponent(v.slice(i+1));
+    if(payload.trim().startsWith('<svg')) v=payload.trim();
+  }
+  if(v.startsWith('<svg')){box.innerHTML=v;return;}
+  const im=new Image();im.alt='QR';
+  im.onerror=()=>{box.innerHTML='<div class="why" style="margin:0">QR не загрузился. Нажми кнопку ниже и введи код в приложение вручную.</div>';};
+  im.src=q||('https://api.qrserver.com/v1/create-qr-code/?size=352x352&data='+encodeURIComponent(uri));
+  box.appendChild(im);
 }
 function pinGate(){
   if(localStorage.getItem(PINKEY)&&sessionStorage.getItem('aku.ok')){unlock();return;}
