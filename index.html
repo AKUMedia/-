@@ -38,7 +38,7 @@
   --serif:'Gambetta','Iowan Old Style',Georgia,serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
 body{
   background:var(--bg);color:var(--paper);font-family:var(--sans);
   font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
@@ -61,7 +61,7 @@ a{color:inherit}
 #lock .box{width:100%;max-width:330px;text-align:center}
 #lock .mark{font-family:var(--serif);font-size:40px;letter-spacing:-.02em;margin-bottom:6px}
 #lock p{color:var(--paper-mute);font-size:13px;margin-bottom:22px}
-#lock input{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 15px;text-align:center;letter-spacing:.2em}
+#lock input{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 15px;text-align:center;letter-spacing:.2em;font-size:16px}
 #lock input::placeholder{letter-spacing:normal;color:var(--paper-mute)}
 #lock button{width:100%;margin-top:10px;background:var(--brass);color:#16140f;font-weight:700;border-radius:12px;padding:13px}
 #lock .err{color:var(--clay);font-size:13px;min-height:18px;margin-top:10px}
@@ -91,16 +91,22 @@ a{color:inherit}
 .railfoot{margin-top:18px;padding:14px 10px 0;border-top:1px solid var(--line);font-size:11.5px;color:var(--paper-mute);line-height:1.7}
 
 /* topbar mobile */
-.mhead{position:sticky;top:0;z-index:40;background:rgba(18,17,16,.92);backdrop-filter:blur(16px);padding-top:env(safe-area-inset-top)}
+.mhead{padding-top:env(safe-area-inset-top);border-bottom:1px solid var(--line)}
 @media(min-width:960px){.mhead{display:none}}
-.topbar{display:flex;align-items:center;gap:10px;padding:13px 16px}
+.topbar{display:flex;align-items:center;gap:9px;padding:13px 16px}
 .topbar b{font-family:var(--serif);font-size:20px;font-weight:600}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:0 16px 10px;border-bottom:1px solid var(--line);scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.tabs::-webkit-scrollbar{display:none}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;gap:2px;
+  background:rgba(18,17,16,.96);backdrop-filter:blur(18px);border-top:1px solid var(--line);
+  padding:5px 4px calc(5px + env(safe-area-inset-bottom))}
+@media(min-width:960px){.bnav{display:none}}
+.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:11px;font-size:10px;font-weight:600;color:var(--paper-mute);transition:color .18s,background .18s}
+.bnav button.on{color:var(--brass);background:var(--brass-soft)}
+.bnav svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tab{white-space:nowrap;padding:7px 13px;border-radius:999px;border:1px solid var(--line);font-size:13px;color:var(--paper-dim)}
 .tab.on{background:var(--brass);border-color:var(--brass);color:#16140f;font-weight:700}
 
-main{padding:24px 16px calc(80px + env(safe-area-inset-bottom));max-width:1180px;width:100%}
+main{padding:22px 16px calc(104px + env(safe-area-inset-bottom));max-width:1180px;width:100%}
+@media(min-width:960px){main{padding:34px 40px 80px}}
 @media(min-width:960px){main{padding:34px 40px 80px}}
 
 /* ---------- TYPE ---------- */
@@ -200,13 +206,13 @@ td{padding:11px 10px;border-top:1px solid var(--line);vertical-align:middle}
 .mask{position:fixed;inset:0;z-index:120;background:rgba(10,9,8,.72);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;padding:0}
 .mask.on{display:flex}
 @media(min-width:720px){.mask{align-items:center;padding:24px}}
-.modal{width:100%;max-width:470px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:18px 18px 0 0;padding:20px;max-height:92vh;overflow-y:auto;animation:up .3s cubic-bezier(.22,1,.36,1)}
+.modal{width:100%;max-width:470px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:18px 18px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));max-height:88vh;overflow-y:auto;overscroll-behavior:contain;animation:up .3s cubic-bezier(.22,1,.36,1)}
 @media(min-width:720px){.modal{border-radius:18px}}
 @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;color:var(--paper-mute);margin-bottom:5px}
-.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
-.field textarea{min-height:110px;resize:vertical;font-size:13px}
+.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:16px}
+.field textarea{min-height:110px;resize:vertical;font-size:16px}
 .field select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--paper-mute) 50%),linear-gradient(135deg,var(--paper-mute) 50%,transparent 50%);background-position:calc(100% - 17px) 18px,calc(100% - 12px) 18px;background-size:5px 5px;background-repeat:no-repeat}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brass);outline:none}
 
@@ -285,9 +291,9 @@ input[type=checkbox]{width:17px;height:17px;accent-color:var(--brass);cursor:poi
       <button class="btn sm" style="margin-left:auto" id="curbtn2"></button>
       <button class="btn sm" onclick="menuOpen()">Меню</button>
     </div>
-    <div class="tabs" id="tabs"></div>
     </div>
     <main id="main"></main>
+    <nav class="bnav" id="bnav"></nav>
   </div>
 </div>
 
@@ -407,10 +413,12 @@ function buildNav(){
     const bad=k==='risks'?'<span class="badge">'+S.risks.filter(r=>r.lvl==='Высокий').length+'</span>':'';
     return '<button class="navlink'+(VIEW===k?' on':'')+'" onclick="go(\''+k+'\')"><svg viewBox="0 0 24 24">'+ic+'</svg>'+l+bad+'</button>';
   }).join('');
-  const tb=document.getElementById('tabs');
-  tb.innerHTML=NAV.map(([k,l])=>'<button class="tab'+(VIEW===k?' on':'')+'" onclick="go(\''+k+'\')">'+l+'</button>').join('');
-  const act=tb.querySelector('.tab.on');
-  if(act)requestAnimationFrame(()=>act.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}));
+  const bn=document.getElementById('bnav');
+  const main4=['today','projects','clients','money'];
+  bn.innerHTML=main4.map(k=>{
+    const n=NAV.find(x=>x[0]===k);
+    return '<button class="'+(VIEW===k?'on':'')+'" onclick="go(\''+k+'\')"><svg viewBox="0 0 24 24">'+n[2]+'</svg>'+n[1]+'</button>';
+  }).join('')+'<button class="'+(main4.includes(VIEW)?'':'on')+'" onclick="moreMenu()"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg>Ещё</button>';
 }
 function go(k){VIEW=k;localStorage.setItem('aku.view',k);render();window.scrollTo({top:0,behavior:'smooth'});}
 
@@ -444,7 +452,7 @@ function vToday(){
   const dleft=new Date(d.getFullYear(),d.getMonth()+1,0).getDate()-d.getDate()+1;
   const lastCheck=daysTo(S.socialsChecked);
   const needSocial=S.socials.length>0&&lastCheck<-28;
-  const needBackup=(S.income.length+S.clients.length)>0&&(!S.lastExport||daysTo(S.lastExport)<-14);
+  const needBackup=(!sb||!ME)&&(S.income.length+S.clients.length)>0&&(!S.lastExport||daysTo(S.lastExport)<-14);
 
   const touch=S.clients.filter(c=>c.next&&c.stage!=='sub').slice(0,4);
   const highRisk=S.risks.filter(r=>r.lvl==='Высокий');
@@ -456,7 +464,7 @@ function vToday(){
   </div>
 
   ${needSocial?`<div class="note" style="margin-top:22px">Прошло больше месяца с последнего обновления соцсетей. Кинь мне скрины статистики — пересчитаю и обновлю цифры.</div>`:''}
-  ${needBackup?`<div class="note clay" style="margin-top:12px">Копия данных давно не скачивалась. Данные живут только в этом браузере — нажми «Скачать копию данных» в меню.</div>`:''}
+  ${needBackup?`<div class="note clay" style="margin-top:12px">Облако сейчас не отвечает, данные пишутся только в этот браузер. Скачай копию через меню, пока связь не вернулась.</div>`:''}
 
   <div class="sechead"><div class="h2">Пульс месяца</div><div class="sub">${dleft} ${plural(dleft,'день','дня','дней')} до конца месяца${S.streak>1?' · заходишь '+S.streak+' '+plural(S.streak,'день','дня','дней')+' подряд':''}</div></div>
   <div class="grid g4">
@@ -960,6 +968,14 @@ function openModal(title,fields,onSave,onDelete){
   setTimeout(()=>{const i=m.querySelector('input,textarea,select');if(i&&window.innerWidth>720)i.focus();},60);
 }
 function closeModal(){document.getElementById('mask').classList.remove('on');}
+function moreMenu(){
+  const m=document.getElementById('modal');
+  m.innerHTML='<div class="between" style="margin-bottom:16px"><div class="h2">Разделы</div><button class="btn sm" onclick="closeModal()">Закрыть</button></div>'
+   +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">'
+   +NAV.map(([k,l,ic])=>'<button class="btn" style="display:flex;align-items:center;gap:9px;padding:14px 12px;justify-content:flex-start;font-size:13.5px'+(VIEW===k?';border-color:var(--brass);color:var(--paper)':'')+'" onclick="closeModal();go(\''+k+'\')"><svg viewBox="0 0 24 24" style="width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round">'+ic+'</svg>'+l+'</button>').join('')
+   +'</div>';
+  document.getElementById('mask').classList.add('on');
+}
 function menuOpen(){
   const m=document.getElementById('modal');
   m.innerHTML=`<div class="between" style="margin-bottom:16px"><div class="h2">Меню</div><button class="btn sm" onclick="closeModal()">Закрыть</button></div>
